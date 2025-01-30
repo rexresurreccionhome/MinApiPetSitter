@@ -5,8 +5,8 @@ using PetSitter.DB;
 
 
 public class PetRepository: IPetRepository {
-    public PetRepository(List<Pet> pets) {
-        PetDB.Pets = pets;
+    public PetRepository(List<Pet>? pets = null) {
+        PetDB.Pets = pets ?? [];
     }
 
     public List<Pet> GetPets() => PetDB.Pets;

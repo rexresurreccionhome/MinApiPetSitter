@@ -9,11 +9,13 @@ using PetSitter.Repository;
 using PetSitter.Routes;
 
 
-public class PetHandlerTests {
+public class PetHandlerTests
+{
     [Fact]
-    public void GetPets_WithListOfPets_ShouldReturnTypedResultsOk() {
+    public void GetPets_WithListOfPets_ShouldReturnTypedResultsOk()
+    {
         // Arrange
-        List<Pet> pets = [new Pet{ Name = "Lola" }, new Pet{ Name = "Cooper" }];
+        List<Pet> pets = [new Pet { Name = "Lola" }, new Pet { Name = "Cooper" }];
         Mock<IPetRepository> mockPetRepository = new();
         mockPetRepository.Setup(petRepository => petRepository.GetPets()).Returns(value: pets);
         PetRoute.PetHandler petHandler = new(mockPetRepository.Object);
@@ -26,9 +28,10 @@ public class PetHandlerTests {
     }
 
     [Fact]
-    public void GetPet_WithExistingPetId_ShouldReturnTypedResultsOk() {
+    public void GetPet_WithExistingPetId_ShouldReturnTypedResultsOk()
+    {
         // Arrange
-        Pet pet = new() { PetId=new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"), Name = "Lola" };
+        Pet pet = new() { PetId = new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"), Name = "Lola" };
         Mock<IPetRepository> mockPetRepository = new();
         mockPetRepository.Setup(petRepository => petRepository.GetPet(pet.PetId)).Returns(value: pet);
         PetRoute.PetHandler petHandler = new(mockPetRepository.Object);
@@ -39,7 +42,8 @@ public class PetHandlerTests {
     }
 
     [Fact]
-    public void GetPet_PetIdDoesNotExist_ShouldReturnTypedResultsNotFound() {
+    public void GetPet_PetIdDoesNotExist_ShouldReturnTypedResultsNotFound()
+    {
         // Arrange
         Guid petId = new("9D2B0228-4D0D-4C23-8B49-01A698857709");
         Mock<IPetRepository> mockPetRepository = new();
@@ -52,9 +56,10 @@ public class PetHandlerTests {
     }
 
     [Fact]
-    public void CreatePet_NewPet_ShouldReturnTypedResultsCreated() {
+    public void CreatePet_NewPet_ShouldReturnTypedResultsCreated()
+    {
         // Arrange
-        PetInput petInput= new() { Name = "Lola" };
+        PetInput petInput = new() { Name = "Lola" };
         Pet pet = new() { Name = petInput.Name };
         Mock<IPetRepository> mockPetRepository = new();
         mockPetRepository.Setup(petRepository => petRepository.CreatePet(petInput)).Returns(pet);
@@ -66,11 +71,12 @@ public class PetHandlerTests {
     }
 
     [Fact]
-    public void UpdatePet_WithExistingPetToUpdate_ShouldReturnTypedResultsOk() {
+    public void UpdatePet_WithExistingPetToUpdate_ShouldReturnTypedResultsOk()
+    {
         // Arrange
         Guid petId = new("9D2B0228-4D0D-4C23-8B49-01A698857709");
         PetInput petInput = new() { Name = "Max" };
-        Pet updatedPet = new() {PetId=petId, Name=petInput.Name};
+        Pet updatedPet = new() { PetId = petId, Name = petInput.Name };
         Mock<IPetRepository> mockPetRepository = new();
         mockPetRepository.Setup(petRepository => petRepository.UpdatePet(petId, petInput)).Returns(value: updatedPet);
         PetRoute.PetHandler petHandler = new(mockPetRepository.Object);
@@ -81,7 +87,8 @@ public class PetHandlerTests {
     }
 
     [Fact]
-    public void UpdatePet_PetToUpdateDoesNotExist_ShouldReturnTypedResultsOk() {
+    public void UpdatePet_PetToUpdateDoesNotExist_ShouldReturnTypedResultsOk()
+    {
         // Arrange
         Guid petId = new("9D2B0228-4D0D-4C23-8B49-01A698857709");
         PetInput petInput = new() { Name = "Max" };
@@ -95,7 +102,8 @@ public class PetHandlerTests {
     }
 
     [Fact]
-    public void DeletePet_WithExistingPetId_ShouldReturnTypedResultsEmpty() {
+    public void DeletePet_WithExistingPetId_ShouldReturnTypedResultsEmpty()
+    {
         // Arrange
         Guid petId = new("9D2B0228-4D0D-4C23-8B49-01A698857709");
         Mock<IPetRepository> mockPetRepository = new();

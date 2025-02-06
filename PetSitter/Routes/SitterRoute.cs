@@ -2,10 +2,10 @@ namespace PetSitter.Routes;
 
 using Microsoft.AspNetCore.Http.HttpResults;
 
+using PetSitter.Domain.Models;
+using PetSitter.DataStore;
 using PetSitter.Models;
-using PetSitter.DB;
-using PetSitter.Repository;
-
+using PetSitter.Domain.Interface;
 
 public static class SitterRoute 
 {
@@ -13,7 +13,8 @@ public static class SitterRoute
 
     public static RouteGroupBuilder MapSitterApi(this RouteGroupBuilder group)
     {
-        SitterRepository sitterRepository = new(SitterDB.Sitters);
+        IDbConnectionFactory dbConnectionFactory = new DbConnectionFactory("Server=localhost;Database=PetSitterDataStore; User Id=sa;Password=Secured*;Pooling=false;TrustServerCertificate=true;Trusted_Connection=false");
+        SitterRepository sitterRepository = new(dbConnectionFactory);
         SitterHandler sitterHandler = new(sitterRepository);
         group.MapGet("", sitterHandler.GetSitters);
         group.MapPost("", sitterHandler.Createsitter);
@@ -26,9 +27,9 @@ public static class SitterRoute
 
     public class SitterHandler 
     {
-        private readonly SitterRepository _sitterRepository;
+        private readonly ISitterRepository _sitterRepository;
 
-        public SitterHandler(SitterRepository sitterRepository) {
+        public SitterHandler(ISitterRepository sitterRepository) {
             _sitterRepository = sitterRepository;
         }
 

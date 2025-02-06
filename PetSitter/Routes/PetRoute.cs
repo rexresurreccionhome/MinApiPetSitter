@@ -2,9 +2,10 @@ namespace PetSitter.Routes;
 
 using Microsoft.AspNetCore.Http.HttpResults;
 
+using PetSitter.Domain.Models;
+using PetSitter.Domain.Interface;
+using PetSitter.DataStore;
 using PetSitter.Models;
-using PetSitter.DB;
-using PetSitter.Repository;
 
 
 public static class PetRoute 
@@ -13,7 +14,8 @@ public static class PetRoute
 
     public static RouteGroupBuilder MapPetApi(this RouteGroupBuilder group)
     {
-        PetRepository petRepository = new(PetDB.Pets);
+        IDbConnectionFactory dbConnectionFactory = new DbConnectionFactory("Server=localhost;Database=PetSitterDataStore; User Id=sa;Password=Secured*;Pooling=false;TrustServerCertificate=true;Trusted_Connection=false");
+        IPetRepository petRepository = new PetRepository(dbConnectionFactory);
         PetHandler petHandler = new(petRepository);
         group.MapGet("", petHandler.GetPets);
         group.MapPost("", petHandler.CreatePet);

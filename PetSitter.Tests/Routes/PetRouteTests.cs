@@ -4,8 +4,9 @@ using Xunit;
 using Moq;
 using Microsoft.AspNetCore.Http.HttpResults;
 
+using PetSitter.Domain.Models;
+using PetSitter.Domain.Interface;
 using PetSitter.Models;
-using PetSitter.Repository;
 using PetSitter.Routes;
 
 

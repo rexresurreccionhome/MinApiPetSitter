@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetSitter", "PetSitter\PetS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetSitter.Tests", "PetSitter.Tests\PetSitter.Tests.csproj", "{ECBACC24-44FF-47D1-B2AC-05C37EAB27A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetSitter.DataStore", "PetSitter.DataStore\PetSitter.DataStore.csproj", "{5C926A65-8C90-4598-9D21-77FBC419E242}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetSitter.Domain", "PetSitter.Domain\PetSitter.Domain.csproj", "{3592CA40-EBEC-4750-AFCD-A4187A022855}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetSitter.DataStore.Tests", "PetSitter.DataStore.Tests\PetSitter.DataStore.Tests.csproj", "{52AE3985-E443-468E-BB2D-9B03169157D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +30,21 @@ Global
 		{ECBACC24-44FF-47D1-B2AC-05C37EAB27A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECBACC24-44FF-47D1-B2AC-05C37EAB27A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECBACC24-44FF-47D1-B2AC-05C37EAB27A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CB49AA5-4796-49AA-B5FD-EB00A612C99A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CB49AA5-4796-49AA-B5FD-EB00A612C99A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CB49AA5-4796-49AA-B5FD-EB00A612C99A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CB49AA5-4796-49AA-B5FD-EB00A612C99A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C926A65-8C90-4598-9D21-77FBC419E242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C926A65-8C90-4598-9D21-77FBC419E242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C926A65-8C90-4598-9D21-77FBC419E242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C926A65-8C90-4598-9D21-77FBC419E242}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3592CA40-EBEC-4750-AFCD-A4187A022855}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3592CA40-EBEC-4750-AFCD-A4187A022855}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3592CA40-EBEC-4750-AFCD-A4187A022855}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3592CA40-EBEC-4750-AFCD-A4187A022855}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52AE3985-E443-468E-BB2D-9B03169157D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52AE3985-E443-468E-BB2D-9B03169157D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52AE3985-E443-468E-BB2D-9B03169157D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52AE3985-E443-468E-BB2D-9B03169157D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

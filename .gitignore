@@ -2,5 +2,6 @@
 bin/
 obj/
 
+.DS_Store
 .editorconfig
 TODOS

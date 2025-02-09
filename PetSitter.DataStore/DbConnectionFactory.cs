@@ -2,13 +2,17 @@ namespace PetSitter.DataStore;
 
 using System.Data;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Options;
+
+using PetSitter.DataStore.Models;
 
 
+public class DbConnectionFactory(IOptions<ConnectionStringSettings> configuration) : IDbConnectionFactory
+{
+    private readonly string _connectionString = configuration.Value.PetSitter;
 
-public class DbConnectionFactory(string connectionString) : IDbConnectionFactory {
-    private readonly string _connectionString = connectionString;
-
-    public IDbConnection DbConn() {
+    public IDbConnection DbConn()
+    {
         return new SqlConnection(_connectionString);
     }
 }

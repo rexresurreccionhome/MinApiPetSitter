@@ -1,6 +1,7 @@
 .vscode/
 bin/
 obj/
+out/
 
 .DS_Store
 .editorconfig

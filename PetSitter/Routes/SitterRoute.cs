@@ -1,65 +1,69 @@
 namespace PetSitter.Routes;
 
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
-using PetSitter.Domain.Models;
-using PetSitter.DataStore;
-using PetSitter.Models;
 using PetSitter.Domain.Interface;
+using PetSitter.Domain.Models;
+using PetSitter.Models;
 
-public static class SitterRoute 
+
+public static class SitterRoute
 {
     public const string baseUrl = "/sitters";
 
     public static RouteGroupBuilder MapSitterApi(this RouteGroupBuilder group)
     {
-        IDbConnectionFactory dbConnectionFactory = new DbConnectionFactory("Server=localhost;Database=PetSitterDataStore; User Id=sa;Password=Secured*;Pooling=false;TrustServerCertificate=true;Trusted_Connection=false");
-        SitterRepository sitterRepository = new(dbConnectionFactory);
-        SitterHandler sitterHandler = new(sitterRepository);
+        SitterHandler sitterHandler = new();
         group.MapGet("", sitterHandler.GetSitters);
         group.MapPost("", sitterHandler.Createsitter);
         group.MapGet("/{sitterId}", sitterHandler.GetSitter);
         group.MapPut("/{sitterId}", sitterHandler.UpdateSitter);
         group.MapDelete("/{sitterId}", sitterHandler.DeleteSitter);
+        group.MapGet("/{sitterId}/appointments", sitterHandler.GetAppointments);
 
         return group;
     }
 
-    public class SitterHandler 
+    public class SitterHandler
     {
-        private readonly ISitterRepository _sitterRepository;
-
-        public SitterHandler(ISitterRepository sitterRepository) {
-            _sitterRepository = sitterRepository;
+        public Ok<GetSittersResponse> GetSitters(ISitterRepository sitterRepository)
+        {
+            return TypedResults.Ok(new GetSittersResponse { Sitters = sitterRepository.GetSitters() });
         }
 
-        public Ok<GetSittersResponse> GetSitters()
+        public Results<Ok<Sitter>, NotFound> GetSitter(Guid sitterId, ISitterRepository sitterRepository)
         {
-            return TypedResults.Ok(new GetSittersResponse{ Sitters = _sitterRepository.GetSitters() });
-        }
-
-        public Results<Ok<Sitter>, NotFound> GetSitter(Guid sitterId)
-        {
-            Sitter? sitter = _sitterRepository.GetSitter(sitterId);
+            Sitter? sitter = sitterRepository.GetSitter(sitterId);
             return sitter is not null ? TypedResults.Ok(sitter) : TypedResults.NotFound();
         }
 
-        public Results<Created<Sitter>, Created> Createsitter(SitterInput sitterInput)
+        public Results<Created<Sitter>, Created> Createsitter(SitterInput sitterInput, ISitterRepository sitterRepository)
         {
-            Sitter sitter = _sitterRepository.CreateSitter(sitterInput);
+            Sitter sitter = sitterRepository.CreateSitter(sitterInput);
             return TypedResults.Created($"{SitterRoute.baseUrl}/{sitter.SitterId}", sitter);
         }
 
-        public Results<Ok<Sitter>, NotFound> UpdateSitter(Guid sitterId, SitterInput sitterInput)
+        public Results<Ok<Sitter>, NotFound> UpdateSitter(Guid sitterId, SitterInput sitterInput, ISitterRepository sitterRepository)
         {
-            Sitter? sitter = _sitterRepository.UpdateSitter(sitterId, sitterInput);
+            Sitter? sitter = sitterRepository.UpdateSitter(sitterId, sitterInput);
             return sitter is not null ? TypedResults.Ok(sitter) : TypedResults.NotFound();
         }
 
-        public Results<EmptyHttpResult, NoContent> DeleteSitter(Guid sitterId)
+        public Results<EmptyHttpResult, NoContent> DeleteSitter(Guid sitterId, ISitterRepository sitterRepository)
         {
-            _sitterRepository.DeleteSitter(sitterId);
+            sitterRepository.DeleteSitter(sitterId);
             return TypedResults.NoContent();
+        }
+
+        public Ok<GetApppointmentsResponse> GetAppointments(Guid sitterId, IAppointmentRepository appointmentRepository, [FromQuery(Name = "serviceType")] ServiceTypes? serviceType = null)
+        {
+            return TypedResults.Ok(
+                new GetApppointmentsResponse
+                {
+                    Appointments = appointmentRepository.GetAppointmentsBySitter(sitterId, serviceType: serviceType),
+                }
+            );
         }
     }
 }

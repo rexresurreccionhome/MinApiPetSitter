@@ -1,66 +1,68 @@
 namespace PetSitter.Routes;
 
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
-using PetSitter.Domain.Models;
 using PetSitter.Domain.Interface;
-using PetSitter.DataStore;
+using PetSitter.Domain.Models;
 using PetSitter.Models;
 
-
-public static class PetRoute 
+public static class PetRoute
 {
     public const string baseUrl = "/pets";
 
     public static RouteGroupBuilder MapPetApi(this RouteGroupBuilder group)
     {
-        IDbConnectionFactory dbConnectionFactory = new DbConnectionFactory("Server=localhost;Database=PetSitterDataStore; User Id=sa;Password=Secured*;Pooling=false;TrustServerCertificate=true;Trusted_Connection=false");
-        IPetRepository petRepository = new PetRepository(dbConnectionFactory);
-        PetHandler petHandler = new(petRepository);
+        PetHandler petHandler = new();
         group.MapGet("", petHandler.GetPets);
         group.MapPost("", petHandler.CreatePet);
         group.MapGet("/{petId}", petHandler.GetPet);
         group.MapPut("/{petId}", petHandler.UpdatePet);
         group.MapDelete("/{petId}", petHandler.DeletePet);
+        group.MapGet("/{petId}/appointments", petHandler.GetAppointments);
 
         return group;
     }
 
-    public class PetHandler 
+    public class PetHandler
     {
-        private readonly IPetRepository _petRepository;
-
-        public PetHandler(IPetRepository petRepository) {
-            _petRepository = petRepository;
+        public Ok<GetPetsResponse> GetPets(IPetRepository petRepository)
+        {
+            return TypedResults.Ok(new GetPetsResponse { Pets = petRepository.GetPets() });
         }
 
-        public Ok<GetPetsResponse> GetPets()
+        public Results<Ok<Pet>, NotFound> GetPet(Guid petId, IPetRepository petRepository)
         {
-            return TypedResults.Ok(new GetPetsResponse{Pets=_petRepository.GetPets()});
-        }
-
-        public Results<Ok<Pet>, NotFound> GetPet(Guid petId)
-        {
-            Pet? pet = _petRepository.GetPet(petId);
+            Pet? pet = petRepository.GetPet(petId);
             return pet is not null ? TypedResults.Ok(pet) : TypedResults.NotFound();
         }
 
-        public Results<Created<Pet>, Created> CreatePet(PetInput petInput)
+        public Results<Created<Pet>, Created> CreatePet(PetInput petInput, IPetRepository petRepository)
         {
-            Pet pet = _petRepository.CreatePet(petInput);
+            Pet pet = petRepository.CreatePet(petInput);
             return TypedResults.Created($"{PetRoute.baseUrl}/{pet.PetId}", pet);
         }
 
-        public Results<Ok<Pet>, NotFound> UpdatePet(Guid petId, PetInput petInput)
+        public Results<Ok<Pet>, NotFound> UpdatePet(Guid petId, PetInput petInput, IPetRepository petRepository)
         {
-            Pet? pet = _petRepository.UpdatePet(petId, petInput);
+            Pet? pet = petRepository.UpdatePet(petId, petInput);
             return pet is not null ? TypedResults.Ok(pet) : TypedResults.NotFound();
         }
 
-        public Results<EmptyHttpResult, NoContent> DeletePet(Guid petId)
+        public Results<EmptyHttpResult, NoContent> DeletePet(Guid petId, IPetRepository petRepository)
         {
-            _petRepository.DeletePet(petId);
+            petRepository.DeletePet(petId);
             return TypedResults.NoContent();
+        }
+
+        public Ok<GetApppointmentsResponse> GetAppointments(Guid petId, IAppointmentRepository appointmentRepository, [FromQuery(Name = "serviceType")] ServiceTypes? serviceType = null)
+        {
+            return TypedResults.Ok(
+                new GetApppointmentsResponse
+                {
+                    Appointments = appointmentRepository.GetAppointmentsByPet(petId, serviceType: serviceType),
+                }
+            );
         }
     }
 }

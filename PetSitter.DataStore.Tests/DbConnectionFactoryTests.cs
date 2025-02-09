@@ -2,15 +2,21 @@ namespace PetSitter.DataStore.Tests;
 
 using System.Data;
 using Microsoft.Data.SqlClient;
-using PetSitter.DataStore;
+using Microsoft.Extensions.Options;
 using Xunit;
 
+using PetSitter.DataStore;
+using PetSitter.DataStore.Models;
 
-public class DbConnectionFactoryTests {
+
+public class DbConnectionFactoryTests
+{
     [Fact]
-    public void DbConn_WithConnectionString_ShouldHaveSqlConnection() {
+    public void DbConn_WithConnectionString_ShouldHaveSqlConnection()
+    {
         // Arrange
-        DbConnectionFactory dbConnectionFactory = new("Server=Test");
+        IOptions<ConnectionStringSettings> connectionStringSettings = Options.Create<ConnectionStringSettings>(new ConnectionStringSettings() { PetSitter = "Server=Test" });
+        DbConnectionFactory dbConnectionFactory = new(connectionStringSettings);
         // Act
         IDbConnection dbConnection = dbConnectionFactory.DbConn();
         // Assert

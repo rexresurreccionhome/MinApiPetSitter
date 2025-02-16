@@ -7,7 +7,6 @@ using PetSitter.Domain.Interface;
 using PetSitter.Domain.Models;
 using PetSitter.Models;
 
-
 public static class SitterRoute
 {
     public const string baseUrl = "/sitters";

@@ -5,5 +5,5 @@ namespace PetSitter.DataStore;
 
 public interface IDbConnectionFactory
 {
-    public IDbConnection DbConn();
+    public IDbConnection DbConn{get;}
 }

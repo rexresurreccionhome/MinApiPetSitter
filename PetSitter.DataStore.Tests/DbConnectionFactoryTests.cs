@@ -18,7 +18,7 @@ public class DbConnectionFactoryTests
         IOptions<ConnectionStringSettings> connectionStringSettings = Options.Create<ConnectionStringSettings>(new ConnectionStringSettings() { PetSitter = "Server=Test" });
         DbConnectionFactory dbConnectionFactory = new(connectionStringSettings);
         // Act
-        IDbConnection dbConnection = dbConnectionFactory.DbConn();
+        IDbConnection dbConnection = dbConnectionFactory.DbConn;
         // Assert
         Assert.IsType<SqlConnection>(dbConnection);
         Assert.Equal("Server=Test", dbConnection.ConnectionString);

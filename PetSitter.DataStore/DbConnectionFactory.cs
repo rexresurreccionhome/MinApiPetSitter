@@ -11,8 +11,9 @@ public class DbConnectionFactory(IOptions<ConnectionStringSettings> configuratio
 {
     private readonly string _connectionString = configuration.Value.PetSitter;
 
-    public IDbConnection DbConn()
-    {
-        return new SqlConnection(_connectionString);
+    public IDbConnection DbConn{
+        get{
+            return new SqlConnection(_connectionString);
+        }
     }
 }

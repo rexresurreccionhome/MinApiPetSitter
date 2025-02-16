@@ -1,6 +1,7 @@
 namespace PetSitter.DataStore;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Dapper;
 using Dapper.SimpleSqlBuilder;
 using Dapper.SimpleSqlBuilder.FluentBuilder;
@@ -9,13 +10,14 @@ using PetSitter.Domain.Interface;
 using PetSitter.Domain.Models;
 
 
+[ExcludeFromCodeCoverage]
 public class AppointmentRepository(IDbConnectionFactory dbConnectionFactory) : IAppointmentRepository
 {
     private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
     private Appointment GetPersistedAppointment(Guid appointmentId)
     {
-        Appointment appointment = _dbConnectionFactory.DbConn().QuerySingle<Appointment>(
+        Appointment appointment = _dbConnectionFactory.DbConn.QuerySingle<Appointment>(
             "SELECT * FROM PetSitterSchema.Appointment WHERE AppointmentId = @AppointmentId",
             new { AppointmentId = appointmentId }
         );
@@ -31,7 +33,7 @@ public class AppointmentRepository(IDbConnectionFactory dbConnectionFactory) : I
             PetId = appointmentInput.PetId,
             SitterId = appointmentInput.SitterId,
         };
-        _dbConnectionFactory.DbConn().Execute(
+        _dbConnectionFactory.DbConn.Execute(
              @"INSERT INTO PetSitterSchema.Appointment(AppointmentId, ServiceType, AppointmentDateTime, PetId, SitterId)
             VALUES (@AppointmentId, @ServiceType, @AppointmentDateTime, @PetId, @SitterId)",
              insertAppointment
@@ -42,7 +44,7 @@ public class AppointmentRepository(IDbConnectionFactory dbConnectionFactory) : I
 
     public void DeleteAppointment(Guid appointmentId)
     {
-        _dbConnectionFactory.DbConn().Execute(
+        _dbConnectionFactory.DbConn.Execute(
             "DELETE FROM PetSitterSchema.Appointment WHERE AppointmentId = @AppointmentId",
             new { AppointmentId = appointmentId }
         );
@@ -50,7 +52,7 @@ public class AppointmentRepository(IDbConnectionFactory dbConnectionFactory) : I
 
     public Appointment? GetAppointment(Guid appointmentId)
     {
-        Appointment? appointment = _dbConnectionFactory.DbConn().QueryFirstOrDefault<Appointment>(
+        Appointment? appointment = _dbConnectionFactory.DbConn.QueryFirstOrDefault<Appointment>(
             "SELECT * FROM PetSitterSchema.Appointment WHERE AppointmentId = @AppointmentId",
             new { AppointmentId = appointmentId }
         );
@@ -66,7 +68,7 @@ public class AppointmentRepository(IDbConnectionFactory dbConnectionFactory) : I
         .Where(endDateTime is not null, $"AppointmentDateTime <= {endDateTime}")
         .Where(serviceType is not null, $"ServiceType = {serviceType}")
         .OrderBy($"AppointmentDateTime DESC");
-        List<Appointment> appointments = [.. _dbConnectionFactory.DbConn().Query<Appointment>(queryBuilder.Sql, queryBuilder.Parameters)];
+        List<Appointment> appointments = [.. _dbConnectionFactory.DbConn.Query<Appointment>(queryBuilder.Sql, queryBuilder.Parameters)];
         return appointments;
     }
 
@@ -78,7 +80,7 @@ public class AppointmentRepository(IDbConnectionFactory dbConnectionFactory) : I
         .Where($"PetId={petId}")
         .Where(serviceType is not null, $"ServiceType = {serviceType}")
         .OrderBy($"AppointmentDateTime DESC");
-        List<Appointment> appointments = [.. _dbConnectionFactory.DbConn().Query<Appointment>(queryBuilder.Sql, queryBuilder.Parameters)];
+        List<Appointment> appointments = [.. _dbConnectionFactory.DbConn.Query<Appointment>(queryBuilder.Sql, queryBuilder.Parameters)];
         return appointments;
     }
 
@@ -90,13 +92,13 @@ public class AppointmentRepository(IDbConnectionFactory dbConnectionFactory) : I
         .Where($"SitterId={sitterId}")
         .Where(serviceType is not null, $"ServiceType = {serviceType}")
         .OrderBy($"AppointmentDateTime DESC");
-        List<Appointment> appointments = [.. _dbConnectionFactory.DbConn().Query<Appointment>(queryBuilder.Sql, queryBuilder.Parameters)];
+        List<Appointment> appointments = [.. _dbConnectionFactory.DbConn.Query<Appointment>(queryBuilder.Sql, queryBuilder.Parameters)];
         return appointments;
     }
 
     public Appointment UpdateAppointment(Guid appointmentId, AppointmentBase appointmentInput)
     {
-        _dbConnectionFactory.DbConn().Execute(@"UPDATE PetSitterSchema.Appointment
+        _dbConnectionFactory.DbConn.Execute(@"UPDATE PetSitterSchema.Appointment
             SET ServiceType = @ServiceType, AppointmentDateTime = @AppointmentDateTime
             WHERE AppointmentId = @AppointmentId",
             new

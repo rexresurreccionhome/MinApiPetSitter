@@ -14,37 +14,37 @@ public class PetRepository(IDbConnectionFactory dbConnectionFactory) : IPetRepos
 
     private Pet GetPersistedPet(Guid petId)
     {
-        Pet insertedPet = _dbConnectionFactory.DbConn().QuerySingle<Pet>("SELECT * FROM PetSitterSchema.Pet WHERE PetId = @PetId", new { PetId = petId });
+        Pet insertedPet = _dbConnectionFactory.DbConn.QuerySingle<Pet>("SELECT * FROM PetSitterSchema.Pet WHERE PetId = @PetId", new { PetId = petId });
         return insertedPet;
     }
 
     public List<Pet> GetPets()
     {
-        List<Pet> pets = [.. _dbConnectionFactory.DbConn().Query<Pet>("SELECT * FROM PetSitterSchema.Pet;")];
+        List<Pet> pets = [.. _dbConnectionFactory.DbConn.Query<Pet>("SELECT * FROM PetSitterSchema.Pet;")];
         return pets;
     }
 
     public Pet? GetPet(Guid petId)
     {
-        Pet? pet = _dbConnectionFactory.DbConn().QueryFirstOrDefault<Pet>("SELECT * FROM PetSitterSchema.Pet WHERE PetId = @PetId", new { PetId = petId });
+        Pet? pet = _dbConnectionFactory.DbConn.QueryFirstOrDefault<Pet>("SELECT * FROM PetSitterSchema.Pet WHERE PetId = @PetId", new { PetId = petId });
         return pet;
     }
 
     public Pet CreatePet(PetBase petInput)
     {
         Pet insertPet = new() { Name = petInput.Name };
-        _dbConnectionFactory.DbConn().Execute("INSERT INTO PetSitterSchema.Pet(PetId, Name) VALUES (@PetId, @Name)", insertPet);
+        _dbConnectionFactory.DbConn.Execute("INSERT INTO PetSitterSchema.Pet(PetId, Name) VALUES (@PetId, @Name)", insertPet);
         return GetPersistedPet(insertPet.PetId);
     }
 
     public Pet? UpdatePet(Guid petId, PetBase petInput)
     {
-        _dbConnectionFactory.DbConn().Execute("UPDATE PetSitterSchema.Pet SET Name = @Name WHERE PetId = @PetId", new { PetId = petId, Name = petInput.Name });
+        _dbConnectionFactory.DbConn.Execute("UPDATE PetSitterSchema.Pet SET Name = @Name WHERE PetId = @PetId", new { PetId = petId, Name = petInput.Name });
         return GetPersistedPet(petId);
     }
 
     public void DeletePet(Guid petId)
     {
-        _dbConnectionFactory.DbConn().Execute("DELETE FROM PetSitterSchema.Pet WHERE PetId = @PetId", new { PetId = petId });
+        _dbConnectionFactory.DbConn.Execute("DELETE FROM PetSitterSchema.Pet WHERE PetId = @PetId", new { PetId = petId });
     }
 }
